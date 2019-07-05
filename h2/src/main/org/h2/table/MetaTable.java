@@ -72,6 +72,11 @@ import org.h2.value.ValueNull;
 import org.h2.value.ValueShort;
 import org.h2.value.ValueString;
 import org.h2.value.ValueStringIgnoreCase;
+import oshi.SystemInfo;
+import oshi.hardware.*;
+import oshi.software.os.OSFileStore;
+import oshi.software.os.OSProcess;
+import oshi.software.os.OperatingSystem;
 
 /**
  * This class is responsible to build the database meta data pseudo tables.
@@ -136,6 +141,8 @@ public class MetaTable extends Table {
     private final int indexColumn;
     private final MetaIndex metaIndex;
 
+    private SystemInfo systemInfo;
+
     /**
      * Create a new metadata table.
      *
@@ -149,6 +156,10 @@ public class MetaTable extends Table {
         this.type = type;
         Column[] cols;
         String indexColumnName = null;
+
+        // Initialize the System Info class - we use this to get system info data and populate system tables
+        systemInfo = new SystemInfo();
+
         switch (type) {
         case TABLES:
             setMetaTableName("TABLES");
@@ -2271,6 +2282,121 @@ public class MetaTable extends Table {
                         constraint.getDeleteAction().getSqlName()
                 );
             }
+            break;
+        }
+        // System level data
+        case SYSTEM_PROCESSES: {
+            OSProcess[] processes = systemInfo.getOperatingSystem().getProcesses(0, OperatingSystem.ProcessSort.PID);
+
+            for (OSProcess currentProcess : processes) {
+                add(rows,
+                        currentProcess.getName(),
+                        currentProcess.getPath(),
+                        currentProcess.getCurrentWorkingDirectory(),
+                        currentProcess.getUser(),
+                        currentProcess.getUserID(),
+                        currentProcess.getGroup(),
+                        currentProcess.getGroupID(),
+                        currentProcess.getProcessID(),
+                        currentProcess.getParentProcessID(),
+                        currentProcess.getThreadCount(),
+                        currentProcess.getPriority(),
+                        currentProcess.calculateCpuPercent());
+            }
+
+            break;
+        }
+        case FILE_SYSTEM_FILES: {
+            OSFileStore[] fileStores = systemInfo.getOperatingSystem().getFileSystem().getFileStores();
+
+            for (OSFileStore currentFileStore: fileStores) {
+                add(rows,
+                        currentFileStore.getName(),
+                        currentFileStore.getVolume(),
+                        currentFileStore.getLogicalVolume(),
+                        currentFileStore.getMount(),
+                        currentFileStore.getDescription(),
+                        currentFileStore.getDescription(),
+                        currentFileStore.getType(),
+                        currentFileStore.getUUID(),
+                        currentFileStore.getUsableSpace(),
+                        currentFileStore.getTotalSpace(),
+                        currentFileStore.getFreeInodes(),
+                        currentFileStore.getTotalInodes());
+            }
+
+            break;
+        }
+        case DISK_STORES: {
+            HWDiskStore[] diskStores = systemInfo.getHardware().getDiskStores();
+
+            for (HWDiskStore currentDiskStore: diskStores) {
+                add(rows,
+                        currentDiskStore.getModel(),
+                        currentDiskStore.getName(),
+                        currentDiskStore.getSerial(),
+                        currentDiskStore.getSize(),
+                        currentDiskStore.getReads(),
+                        currentDiskStore.getReadBytes(),
+                        currentDiskStore.getWriteBytes(),
+                        currentDiskStore.getPartitions().length);
+            }
+
+            break;
+        }
+        case NETWORK_INTERFACES: {
+            NetworkIF[] networkIFs = systemInfo.getHardware().getNetworkIFs();
+
+            for (NetworkIF currentNetworkIF : networkIFs) {
+                add(rows,
+                        currentNetworkIF.getMTU(),
+                        currentNetworkIF.getMacaddr(),
+                        currentNetworkIF.getIPv4addr(),
+                        currentNetworkIF.getIPv6addr(),
+                        currentNetworkIF.getBytesRecv(),
+                        currentNetworkIF.getBytesSent(),
+                        currentNetworkIF.getPacketsRecv(),
+                        currentNetworkIF.getPacketsSent(),
+                        currentNetworkIF.getSpeed());
+            }
+
+            break;
+        }
+        case SYSTEM_MEMORY: {
+            GlobalMemory globalMemory = systemInfo.getHardware().getMemory();
+
+            add(rows,
+                    globalMemory.getTotal(),
+                    globalMemory.getAvailable(),
+                    globalMemory.getSwapTotal(),
+                    globalMemory.getSwapUsed(),
+                    globalMemory.getSwapPagesIn(),
+                    globalMemory.getSwapPagesOut(),
+                    globalMemory.getPageSize());
+
+            break;
+        }
+        case SYSTEM_SENSORS: {
+            Sensors sensors = systemInfo.getHardware().getSensors();
+
+            add(rows,
+                    sensors.getCpuTemperature(),
+                    sensors.getCpuVoltage());
+
+            break;
+        }
+        case USB_DEVICES: {
+            UsbDevice[] usbDevices = systemInfo.getHardware().getUsbDevices(false);
+
+            for (UsbDevice currentUsbDevice : usbDevices) {
+                add(rows,
+                        currentUsbDevice.getName(),
+                        currentUsbDevice.getVendor(),
+                        currentUsbDevice.getVendorId(),
+                        currentUsbDevice.getProductId(),
+                        currentUsbDevice.getSerialNumber());
+            }
+
             break;
         }
         default:
