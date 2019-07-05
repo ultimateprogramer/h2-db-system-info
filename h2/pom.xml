@@ -87,6 +87,11 @@
       <artifactId>jts-core</artifactId>
       <version>1.15.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.oshi</groupId>
+      <artifactId>oshi-dist</artifactId>
+      <version>3.13.3</version>
+    </dependency>
     <!-- END COMPILE DEPENDENCIES !-->
 
 
