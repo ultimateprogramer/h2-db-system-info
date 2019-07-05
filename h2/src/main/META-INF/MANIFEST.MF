@@ -72,3 +72,4 @@ Export-Package: org.h2;version="${version}",
  org.h2.store.fs;version="${version}"
 Provide-Capability: osgi.service;objectClass:List<String>=org.osgi.service.jdbc.DataSourceFactory
 Premain-Class: org.h2.util.Profiler
+Class-Path: oshi-core-3.13.3.jar jna-5.3.1.jar slf4j-api-1.7.25.jar slf4j-simple-1.7.25-sources.jar
