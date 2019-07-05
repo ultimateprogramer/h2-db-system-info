@@ -272,6 +272,9 @@ public class Build extends BuildBase {
                 File.pathSeparator + "ext/jts-core-1.15.0.jar" +
                 File.pathSeparator + "ext/asm-7.0.jar" +
                 File.pathSeparator + "ext/oshi-core-3.13.3.jar" +
+                File.pathSeparator + "ext/jna-5.3.1.jar" +
+                File.pathSeparator + "ext/slf4j-api-1.7.25.jar" +
+                File.pathSeparator + "ext/slf4j-simple-1.7.25-sources.jar" +
                 File.pathSeparator + javaToolsJar;
         FileList files;
         if (clientOnly) {
