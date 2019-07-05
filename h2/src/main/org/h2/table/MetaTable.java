@@ -123,19 +123,21 @@ public class MetaTable extends Table {
     private static final int TABLE_CONSTRAINTS = 30;
     private static final int KEY_COLUMN_USAGE = 31;
     private static final int REFERENTIAL_CONSTRAINTS = 32;
-    private static final int META_TABLE_TYPE_COUNT = REFERENTIAL_CONSTRAINTS + 1;
 
     // Operating System Meta-data
     // Software
-    private static final int SYSTEM_PROCESSES = 100;
-    private static final int FILE_SYSTEM_FILES = 101;
+    private static final int SYSTEM_PROCESSES = 33;
+    private static final int FILE_SYSTEM_FILES = 34;
 
     // Hardware
-    private static final int DISK_STORES = 102;
-    private static final int NETWORK_INTERFACES = 103;
-    private static final int SYSTEM_MEMORY = 104;
-    private static final int SYSTEM_SENSORS = 105;
-    private static final int USB_DEVICES = 106;
+    private static final int DISK_STORES = 35;
+    private static final int NETWORK_INTERFACES = 36;
+    private static final int SYSTEM_MEMORY = 37;
+    private static final int SYSTEM_SENSORS = 38;
+    private static final int USB_DEVICES = 39;
+
+    // All tables in total
+    private static final int META_TABLE_TYPE_COUNT = USB_DEVICES + 1;
 
     private final int type;
     private final int indexColumn;
