@@ -22,10 +22,3 @@ More information: https://h2database.com
 | Footprint (embedded database)  | ~2 MB   | ~3 MB   | ~1.5 MB | —     | —       |
 | Footprint (JDBC client driver) | ~500 KB | ~600 KB | ~1.5 MB | ~1 MB | ~700 KB |
 
-## Additional things to get the compile to work
-
-There may be problems downloading `oshi-core-3.13.3.jar`. Therefore run:
-
-```
-mvn install:install-file -DgroupId=com.github.oshi -DartifactId=oshi-dist -Dversion=3.13.3 -Dpackaging=jar -Dfile=./ext/oshi-core-3.13.3.jar
-```
