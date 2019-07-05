@@ -120,6 +120,18 @@ public class MetaTable extends Table {
     private static final int REFERENTIAL_CONSTRAINTS = 32;
     private static final int META_TABLE_TYPE_COUNT = REFERENTIAL_CONSTRAINTS + 1;
 
+    // Operating System Meta-data
+    // Software
+    private static final int SYSTEM_PROCESSES = 100;
+    private static final int FILE_SYSTEM_FILES = 101;
+
+    // Hardware
+    private static final int DISK_STORES = 102;
+    private static final int NETWORK_INTERFACES = 103;
+    private static final int SYSTEM_MEMORY = 104;
+    private static final int SYSTEM_SENSORS = 105;
+    private static final int USB_DEVICES = 106;
+
     private final int type;
     private final int indexColumn;
     private final MetaIndex metaIndex;
@@ -625,6 +637,104 @@ public class MetaTable extends Table {
             );
             break;
         }
+        // Operating System Meta-Data
+        case SYSTEM_PROCESSES: {
+            setMetaTableName("SYSTEM_PROCESSES");
+            cols = createColumns(
+                    "NAME",
+                    "PATH",
+                    "WORKING_DIRECTORY",
+                    "USER",
+                    "USER_ID",
+                    "GROUP",
+                    "GROUP_ID",
+                    "PROCESS_ID",
+                    "PARENT_PROCESS_ID",
+                    "THREAD_COUNT",
+                    "PRIORITY",
+                    "CPU_PERCENT"
+            );
+            break;
+        }
+        case FILE_SYSTEM_FILES: {
+            setMetaTableName("FILE_SYSTEM_FILES");
+            cols = createColumns(
+                    "NAME",
+                    "VOLUME",
+                    "LOGICAL_VOLUME",
+                    "MOUNT",
+                    "DESCRIPTION",
+                    "FS_TYPE",
+                    "UUID",
+                    "USABLE_SPACE",
+                    "TOTAL_SPACE",
+                    "FREE_INODES",
+                    "TOTAL_INODES"
+            );
+            break;
+        }
+        case DISK_STORES: {
+            setMetaTableName("DISK_STORES");
+            cols = createColumns(
+                    "MODEL",
+                    "NAME",
+                    "SERIAL",
+                    "SIZE",
+                    "READS",
+                    "READ_BYTES",
+                    "WRITE_BYTES",
+                    "NUM_PARTITIONS"
+            );
+            break;
+        }
+        case NETWORK_INTERFACES: {
+            setMetaTableName("NETWORK_INTERFACES");
+            cols = createColumns(
+                    "MTU",
+                    "MAC",
+                    "IPV4",
+                    "IPV6",
+                    "BYTES_RECEIVED",
+                    "BYTES_SENT",
+                    "PACKETS_RECEIVED",
+                    "PACKETS_SENT",
+                    "SPEED"
+            );
+            break;
+        }
+        case SYSTEM_MEMORY: {
+            setMetaTableName("SYSTEM_MEMORY");
+            cols = createColumns(
+                    "TOTAL",
+                    "AVAILABLE",
+                    "SWAP_TOTAL",
+                    "SWAP_USED",
+                    "SWAP_PAGES_IN",
+                    "SWAP_PAGES_OUT",
+                    "PAGE_SIZE"
+            );
+            break;
+        }
+        case SYSTEM_SENSORS: {
+            setMetaTableName("SYSTEM_SENSORS");
+            cols = createColumns(
+                    "CPU_TEMPERATURE",
+                    "CPU_VOLTAGE"
+            );
+            break;
+        }
+        case USB_DEVICES: {
+            setMetaTableName("USB_DEVICES");
+            cols = createColumns(
+                    "NAME",
+                    "VENDOR",
+                    "VENDOR_ID",
+                    "PRODUCT_ID",
+                    "SERIAL_NUMBER"
+            );
+            break;
+        }
+        // By default
         default:
             throw DbException.throwInternalError("type="+type);
         }
