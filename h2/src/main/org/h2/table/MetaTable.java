@@ -2299,11 +2299,11 @@ public class MetaTable extends Table {
                         currentProcess.getUserID(),
                         currentProcess.getGroup(),
                         currentProcess.getGroupID(),
-                        currentProcess.getProcessID(),
-                        currentProcess.getParentProcessID(),
-                        currentProcess.getThreadCount(),
-                        currentProcess.getPriority(),
-                        currentProcess.calculateCpuPercent());
+                        ValueInt.get(currentProcess.getProcessID()),
+                        ValueInt.get(currentProcess.getParentProcessID()),
+                        ValueInt.get(currentProcess.getThreadCount()),
+                        ValueInt.get(currentProcess.getPriority()),
+                        ValueDouble.get(currentProcess.calculateCpuPercent()));
             }
 
             break;
@@ -2318,13 +2318,12 @@ public class MetaTable extends Table {
                         currentFileStore.getLogicalVolume(),
                         currentFileStore.getMount(),
                         currentFileStore.getDescription(),
-                        currentFileStore.getDescription(),
                         currentFileStore.getType(),
                         currentFileStore.getUUID(),
-                        currentFileStore.getUsableSpace(),
-                        currentFileStore.getTotalSpace(),
-                        currentFileStore.getFreeInodes(),
-                        currentFileStore.getTotalInodes());
+                        ValueLong.get(currentFileStore.getUsableSpace()),
+                        ValueLong.get(currentFileStore.getTotalSpace()),
+                        ValueLong.get(currentFileStore.getFreeInodes()),
+                        ValueLong.get(currentFileStore.getTotalInodes()));
             }
 
             break;
@@ -2337,11 +2336,11 @@ public class MetaTable extends Table {
                         currentDiskStore.getModel(),
                         currentDiskStore.getName(),
                         currentDiskStore.getSerial(),
-                        currentDiskStore.getSize(),
-                        currentDiskStore.getReads(),
-                        currentDiskStore.getReadBytes(),
-                        currentDiskStore.getWriteBytes(),
-                        currentDiskStore.getPartitions().length);
+                        ValueLong.get(currentDiskStore.getSize()),
+                        ValueLong.get(currentDiskStore.getReads()),
+                        ValueLong.get(currentDiskStore.getReadBytes()),
+                        ValueLong.get(currentDiskStore.getWriteBytes()),
+                        ValueInt.get(currentDiskStore.getPartitions().length));
             }
 
             break;
@@ -2351,15 +2350,15 @@ public class MetaTable extends Table {
 
             for (NetworkIF currentNetworkIF : networkIFs) {
                 add(rows,
-                        currentNetworkIF.getMTU(),
+                        ValueInt.get(currentNetworkIF.getMTU()),
                         currentNetworkIF.getMacaddr(),
-                        currentNetworkIF.getIPv4addr(),
-                        currentNetworkIF.getIPv6addr(),
-                        currentNetworkIF.getBytesRecv(),
-                        currentNetworkIF.getBytesSent(),
-                        currentNetworkIF.getPacketsRecv(),
-                        currentNetworkIF.getPacketsSent(),
-                        currentNetworkIF.getSpeed());
+                        constructIPString(currentNetworkIF.getIPv4addr()),
+                        constructIPString(currentNetworkIF.getIPv6addr()),
+                        ValueLong.get(currentNetworkIF.getBytesRecv()),
+                        ValueLong.get(currentNetworkIF.getBytesSent()),
+                        ValueLong.get(currentNetworkIF.getPacketsRecv()),
+                        ValueLong.get(currentNetworkIF.getPacketsSent()),
+                        ValueLong.get(currentNetworkIF.getSpeed()));
             }
 
             break;
@@ -2368,13 +2367,13 @@ public class MetaTable extends Table {
             GlobalMemory globalMemory = systemInfo.getHardware().getMemory();
 
             add(rows,
-                    globalMemory.getTotal(),
-                    globalMemory.getAvailable(),
-                    globalMemory.getSwapTotal(),
-                    globalMemory.getSwapUsed(),
-                    globalMemory.getSwapPagesIn(),
-                    globalMemory.getSwapPagesOut(),
-                    globalMemory.getPageSize());
+                    ValueLong.get(globalMemory.getTotal()),
+                    ValueLong.get(globalMemory.getAvailable()),
+                    ValueLong.get(globalMemory.getSwapTotal()),
+                    ValueLong.get(globalMemory.getSwapUsed()),
+                    ValueLong.get(globalMemory.getSwapPagesIn()),
+                    ValueLong.get(globalMemory.getSwapPagesOut()),
+                    ValueLong.get(globalMemory.getPageSize()));
 
             break;
         }
@@ -2382,8 +2381,8 @@ public class MetaTable extends Table {
             Sensors sensors = systemInfo.getHardware().getSensors();
 
             add(rows,
-                    sensors.getCpuTemperature(),
-                    sensors.getCpuVoltage());
+                    ValueDouble.get(sensors.getCpuTemperature()),
+                    ValueDouble.get(sensors.getCpuVoltage()));
 
             break;
         }
@@ -2420,6 +2419,27 @@ public class MetaTable extends Table {
         default:
             throw DbException.throwInternalError("action="+action);
         }
+    }
+
+    /**
+     * Assemble an IP address from a string
+     *
+     * @param array
+     * @return
+     */
+    private static String constructIPString(String [] array) {
+        int len = array.length;
+        String result = "";
+
+        for(int loop = 0; loop < len; loop ++) {
+            result = result.concat(array[loop]);
+
+            if(loop < len - 1) {
+                result = result.concat(".");
+            }
+        }
+
+        return result;
     }
 
     private static ConstraintUnique lookupUniqueForReferential(ConstraintReferential referential) {
