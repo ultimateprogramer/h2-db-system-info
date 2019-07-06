@@ -30,7 +30,7 @@ We integrated the following tables as part of `INFORMATION_SCHEMA`:
 
 2. `SYSTEM_PROCSSES` with a `WHERE` clause: `SELECT * FROM INFORMATION_SCHEMA.SYSTEM_PROCESSES where USER='ahmed'`
 
-![SYSTEM_PROCESSES with Filter](h2/images/SYSTEM_PROCESSES with Filter.png)
+![SYSTEM_PROCESSES with Filter](h2/images/SYSTEM_PROCESSESWithFilter.png)
 
 # Welcome to H2, the Java SQL database (H2 Original README).
 
